@@ -2,6 +2,7 @@
 import { watchEffect, ref, defineComponent } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
+import Setting from './components/setting.vue'
 
 const mode = ref("podomoro");
 const podomoroActive = ref(true);
@@ -13,6 +14,8 @@ const seconds = ref(0);
 const playOrPause = ref("play.svg");
 const isActive = ref(false);
 const interval = ref(0)
+
+const settingDisplayed = ref(false);
 
 const oneDigit = (num:Number) => {
     return num.toString().length === 1
@@ -90,19 +93,34 @@ function reset(){
   }
 }
 
+const toggleSetting = () => {
+  settingDisplayed.value = !settingDisplayed.value;
+  console.log("Clicked!")
+}
 
 </script>
 
 <template>
+  
   <header>
+    <div class="flex-box">
+      <button id="target" @click="toggleSetting">
+        <img id="target-icon" src="./assets/icons/icon/target.svg" >
+        <span id="target-desc">Set a target!</span>
+      </button>
+      <Setting @closeSetting="toggleSetting" :class="settingDisplayed?'show':'hide'"/>
+    </div>
+    
+  </header>
+  <main>
     <div class="wrapper">
       <div class="flex-box">
         <OptionButton class="option" :active="podomoroActive" @click="changeMode('podomoro')" desc="podomoro" />
         <OptionButton class="option" :active="shortActive" @click="changeMode('short')" desc="short break" />
         <OptionButton class="option" :active="longActive" @click="changeMode('long')" desc="long break" />
       </div>
-      
-      <h1 class = "center">
+
+      <h1>
         {{ oneDigit(minutes)?"0"+ minutes:minutes  }} : {{ oneDigit(seconds)?"0"+ seconds:seconds }}
       </h1>
 
@@ -111,11 +129,8 @@ function reset(){
         <ControlButton class="control-button" @click="reset" filename="reset.svg" />
       </div>
     </div>
-  </header>
-
-  <main>
-    
   </main>
+
 </template>
 
 <style scoped>
@@ -133,10 +148,51 @@ function reset(){
 
 }
 
+.show{
+    display:block;
+}
+
+.hide{
+    display:none;
+}
+
+
+#target{
+  background:none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:flex-start;
+  gap:0.5rem;
+  align-items: center;
+  padding:0.8rem;
+  border:3px solid black;
+  border-radius:2rem;
+  margin-top: 10px;
+  transition-duration: 150ms;
+  cursor:pointer
+}
+
+#target:hover{
+  border:3px solid white;
+  background-color: white;
+  transition-duration: 150ms;
+  cursor:pointer
+}
+
+#target-icon{
+  width:1.9rem;
+}
+
+#target-desc{
+  font-weight:700;
+  font-size: 1.2rem;
+}
+
 .flex-box{
   display: flex;
   flex-wrap:wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .control-bar{
