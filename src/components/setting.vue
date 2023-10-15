@@ -9,14 +9,27 @@ const emit = defineEmits(["closeSetting", "saveChanges"]);
 
 const targetMinutes = ref(0);
 const targetHours = ref(0);
+const showError = ref(false);
+
+const toggleError = (display:boolean) => {
+    showError.value = display;
+}
 
 function clickHandler(){
+
+    toggleError(false);
     emit("closeSetting", false);
 }
 
 function changeHandler(){
-    emit("saveChanges", targetHours.value, targetMinutes.value);
-    clickHandler();
+    if(targetHours.value < 0 || targetMinutes.value < 0){
+        toggleError(true);
+    }else{
+        toggleError(false);
+        emit("saveChanges", targetHours.value, targetMinutes.value);
+        clickHandler();
+    }
+    
 }
 
 function updateHour(evt:any){
@@ -38,16 +51,18 @@ function updateMinute(evt:any){
             <p class="small-text">hours</p>
             <input class = "time-input" type="number" placeholder="hours" :value="targetHours" @change="updateHour"/>
             
-            <p class="small-text hide">Invalid number. Choose a number between 0 and 120.</p>
             <p class="small-text">minutes</p>
             
             <input class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateMinute"/>
-            
+
+            <p class="small-text text-red" :class="showError?'show':'hide'">Invalid number. Choose a number above 0.</p>
+
             <p>
                 <button class="submit" @click="changeHandler">
                     Save
                 </button>
             </p>
+            
             
         </div>
 
@@ -86,6 +101,9 @@ function updateMinute(evt:any){
     color:gray;
 }
 
+.text-red{
+    color:rgb(233, 59, 59);
+}
 .desc{
     color:white;
     font-size: 01rem;
