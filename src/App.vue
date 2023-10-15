@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { watchEffect, ref, defineComponent } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
@@ -9,7 +10,15 @@ const podomoroActive = ref(true);
 const shortActive = ref(false);
 const longActive = ref(false);
 
-const minutes = ref(25);
+const PODOMORO_MINUTES = 25;
+const SHORT_BREAK_MINUTES = 5;
+const LONG_BREAK_MINUTES = 10;
+
+const targetDesc = ref("Set a target!")
+const targetHour = ref(0);
+const targetMinute = ref(0);
+
+const minutes = ref(PODOMORO_MINUTES);
 const seconds = ref(0);
 const playOrPause = ref("play.svg");
 const isActive = ref(false);
@@ -25,37 +34,46 @@ const changeMode = (param:string) => {
   mode.value = param;
 
   if(mode.value === "podomoro"){
-    minutes.value = 25;
+    minutes.value = PODOMORO_MINUTES;
     seconds.value = 0;
-    podomoroActive.value = true;
-    shortActive.value = false;
-    longActive.value = false;
+    setActiveMode("podomoro");
   }else if(mode.value === "short"){
-    minutes.value = 5;
+    minutes.value = SHORT_BREAK_MINUTES;
     seconds.value = 0;
-    podomoroActive.value = false;
-    shortActive.value = true;
-    longActive.value = false;
+    setActiveMode("short");
   } else if(mode.value === "long"){
-    minutes.value = 10;
+    minutes.value = LONG_BREAK_MINUTES;
     seconds.value = 0;
-    podomoroActive.value = false;
-    shortActive.value = false;
-    longActive.value = true;
+    setActiveMode("long");
   }
+
+  clearInterval(interval.value);
 }
 
+function setActiveMode(mode:string){
+  podomoroActive.value = false;
+  shortActive.value = false;
+  longActive.value = false;
+
+  if(mode === "podomoro"){
+    podomoroActive.value = true;
+  }else if(mode === "short"){
+    shortActive.value = true;
+  }else if(mode === "long"){
+    longActive.value = true;
+  }
+  
+}
 
 function countdown(){ 
   if(playOrPause.value === "play.svg"){
-
     playOrPause.value = "pause.svg";
     isActive.value = true;
 
     interval.value = setInterval(() => {
       seconds.value--;
-              
       if(seconds.value < 0){
+        
         if(minutes.value == 0){
           //timer finishes
           seconds.value = 0;
@@ -65,8 +83,26 @@ function countdown(){
 
         seconds.value = 59;
         minutes.value--;  
-      }
-              
+        
+        //UPDATE TARGET TIME
+        if(targetDesc.value === "Target achieved!"){
+            endTarget();
+        }else if(targetDesc.value != "Set a target!"){
+            targetMinute.value--;
+            if(targetMinute.value < 0){
+                targetHour.value--;
+                targetMinute.value = 59;
+            }
+            setTargetTime(targetHour.value, targetMinute.value)
+
+            if(targetHour.value < 0){
+              targetDesc.value = "Target achieved!"
+              endTarget();
+            } 
+        }   
+        //END TARGET TIME
+        
+      } 
     }, 1000)
 
   }else{
@@ -98,6 +134,18 @@ const toggleSetting = () => {
   console.log("Clicked!")
 }
 
+const setTargetTime = (hours:number,minutes:number) => {
+  console.log("received");
+  targetHour.value = hours;
+  targetMinute.value = minutes;
+  console.log(targetHour.value)
+  targetDesc.value = targetHour.value + " hours and " + targetMinute.value + " minutes"
+}
+
+const endTarget = () => {
+  targetDesc.value = "Target reached!"
+}
+
 </script>
 
 <template>
@@ -106,9 +154,9 @@ const toggleSetting = () => {
     <div class="flex-box">
       <button id="target" @click="toggleSetting">
         <img id="target-icon" src="./assets/icons/icon/target.svg" >
-        <span id="target-desc">Set a target!</span>
+        <span id="target-desc">{{targetDesc}}</span>
       </button>
-      <Setting @closeSetting="toggleSetting" :class="settingDisplayed?'show':'hide'"/>
+      <Setting @closeSetting="toggleSetting" @saveChanges="setTargetTime" :class="settingDisplayed?'show':'hide'"/>
     </div>
     
   </header>

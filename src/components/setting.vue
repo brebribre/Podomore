@@ -3,13 +3,28 @@ import {defineProps, ref} from "vue";
 
 const props = defineProps({
     filename: String,
-   
 })
 
-const emit= defineEmits(["closeSetting"])
+const emit = defineEmits(["closeSetting", "saveChanges"]);
+
+const targetMinutes = ref(0);
+const targetHours = ref(0);
 
 function clickHandler(){
     emit("closeSetting", false);
+}
+
+function changeHandler(){
+    emit("saveChanges", targetHours.value, targetMinutes.value);
+    clickHandler();
+}
+
+function updateHour(evt:any){
+    targetHours.value = evt.target.value.trim();
+}
+
+function updateMinute(evt:any){
+    targetMinutes.value = evt.target.value.trim();
 }
 
 </script>
@@ -20,11 +35,20 @@ function clickHandler(){
         <p class="desc">How long do you want to study today?</p>
 
         <div class="time-container">
-            <input class = "time-input" type="number" placeholder="hours"/>
-            <input class = "time-input" type="number" placeholder="minutes"/>
-            <button class="submit">
-            Submit
-        </button>
+            <p class="small-text">hours</p>
+            <input class = "time-input" type="number" placeholder="hours" :value="targetHours" @change="updateHour"/>
+            
+            <p class="small-text hide">Invalid number. Choose a number between 0 and 120.</p>
+            <p class="small-text">minutes</p>
+            
+            <input class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateMinute"/>
+            
+            <p>
+                <button class="submit" @click="changeHandler">
+                    Save
+                </button>
+            </p>
+            
         </div>
 
         <p id="close-button" @click="clickHandler">X</p>
@@ -44,48 +68,62 @@ function clickHandler(){
     margin-left: auto; 
     margin-right: auto; 
     width: 25rem; /* Need a specific value to work */
-    height: 18rem;
+    height: 25rem;
+    text-align:center;
 }
 
+.show{
+    display:block;
+}
+
+.hide{
+    display:none;
+}
+
+.small-text{
+    font-size: 0.75rem;
+    font-weight: 400;
+    color:gray;
+}
 
 .desc{
     color:white;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 01rem;
+    font-weight: 500;
     text-align:center;
     margin-top: 4rem;
-    margin-bottom: 1rem;
 }
 
 .time-container{
-    position:absolute;
-    left:0;
-    right:0;
-    margin-left: auto;
-    margin-right: auto;
-    width:100px;
     color:white;
     font-weight: 800;
 }
 
 .time-input{
     border: none;
-    border-radius:0.5rem;
+    border-radius:0.2rem;
     background-color:white;
     padding:0.5rem;
     width:5rem;
-    margin-top:10px;
+    
 }
 
 .submit{
     width:6rem;
-    margin-top: 15px;
-    padding:0.4rem;
-    border-radius: 0.375rem;
+    padding:0.5rem 0.4rem;
+    margin-top: 0.8rem;
+    border-radius: 0.2rem;
     border:0;
     background:orange;
     color:white;
-    
+    cursor:pointer;
+    transition-duration: 200ms;
+}
+
+.submit:hover{
+    background-color:black;
+    color:white;
+    transition-duration: 200ms;
 }
 
 #close-button{
@@ -93,6 +131,7 @@ function clickHandler(){
     position:absolute;
     top:5px;
     right:20px;
+    cursor:pointer
 }
 
 </style>
