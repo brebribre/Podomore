@@ -11,25 +11,23 @@ const targetMinutes = ref(0);
 const targetHours = ref(0);
 const showError = ref(false);
 
-const toggleError = (display:boolean) => {
-    showError.value = display;
-}
-
 function clickHandler(){
-
     toggleError(false);
     emit("closeSetting", false);
 }
 
-function changeHandler(){
+function saveTimeSetting(){
     if(targetHours.value < 0 || targetMinutes.value < 0){
         toggleError(true);
     }else{
         toggleError(false);
         emit("saveChanges", targetHours.value, targetMinutes.value);
         clickHandler();
-    }
-    
+    } 
+}
+
+const toggleError = (isDisplayed:boolean) => {
+    showError.value = isDisplayed;
 }
 
 function updateHour(evt:any){
@@ -55,10 +53,10 @@ function updateMinute(evt:any){
             
             <input class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateMinute"/>
 
-            <p class="small-text text-red" :class="showError?'show':'hide'">Invalid number. Choose a number above 0.</p>
+            <p class="small-text text-red" v-if="showError">Invalid number. Put a number above 0.</p>
 
             <p>
-                <button class="submit" @click="changeHandler">
+                <button class="submit" @click="saveTimeSetting">
                     Save
                 </button>
             </p>
@@ -85,14 +83,6 @@ function updateMinute(evt:any){
     width: 25rem; /* Need a specific value to work */
     height: 25rem;
     text-align:center;
-}
-
-.show{
-    display:block;
-}
-
-.hide{
-    display:none;
 }
 
 .small-text{
@@ -126,6 +116,7 @@ function updateMinute(evt:any){
     
 }
 
+/*SUBMIT*/
 .submit{
     width:6rem;
     padding:0.5rem 0.4rem;
@@ -137,7 +128,6 @@ function updateMinute(evt:any){
     cursor:pointer;
     transition-duration: 200ms;
 }
-
 .submit:hover{
     background-color:black;
     color:white;

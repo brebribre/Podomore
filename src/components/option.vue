@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const props = defineProps({
     desc: String,
     active: Boolean
@@ -8,8 +9,9 @@ const props = defineProps({
 
 <template>
   <main>
-    <button class="option-button"
-    :class="props.active ? 'active-button' : ''">{{desc}}</button>
+    <button class="option-button" :class="{active: props.active}" >
+      {{desc}}
+    </button>
   </main>
 </template>
 
@@ -26,14 +28,14 @@ const props = defineProps({
   
 }
 
-.active-button{
-  background-color: white;
-  color:black
-}
-
 .option-button:hover{
     background-color: white;
     color:rgb(41, 41, 41);
+}
+
+.active{
+  background-color: white;
+  color:black
 }
 
 </style>

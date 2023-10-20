@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
-import { watchEffect, ref, defineComponent } from 'vue'
+import { ref } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
 import Setting from './components/setting.vue'
 
+/*DEFAULT SETTING*/
 const mode = ref("podomoro");
 const podomoroActive = ref(true);
 const shortActive = ref(false);
@@ -14,17 +15,22 @@ const PODOMORO_MINUTES = 25;
 const SHORT_BREAK_MINUTES = 5;
 const LONG_BREAK_MINUTES = 10;
 
+/*TARGET SETTING*/
 const targetDesc = ref("Set a target!")
 const targetHour = ref(0);
 const targetMinute = ref(0);
 
+const settingDisplayed = ref(false);
+
+/*DEFAULT SETTING*/
 const minutes = ref(PODOMORO_MINUTES);
 const seconds = ref(0);
 const playOrPause = ref("play.svg");
 const isActive = ref(false);
+
+/*INTERVAL SETTING*/
 const interval = ref(0)
 
-const settingDisplayed = ref(false);
 
 const oneDigit = (num:Number) => {
     return num.toString().length === 1
@@ -67,40 +73,41 @@ function setActiveMode(mode:string){
 
 function countdown(){ 
   if(playOrPause.value === "play.svg"){
+    //change play symbol to pause and set timer as active
     playOrPause.value = "pause.svg";
     isActive.value = true;
 
+    //timer plays
     interval.value = setInterval(() => {
       seconds.value--;
       if(seconds.value < 0){
         
-        if(minutes.value == 0){
-          //timer finishes
+        if(minutes.value == 0){ // check if timer should end
           seconds.value = 0;
           playOrPause.value = "play.svg";
           return clearInterval(interval.value);
+        }else{ // if not, move on to the next minute
+          seconds.value = 59;
+          minutes.value--;  
+
+          //Upgrade target time
+          if(targetDesc.value === "Target reached!"){
+            endTarget()
+          }else if(targetDesc.value != "Set a target!"){
+              targetMinute.value--;
+              if(targetMinute.value < 0){
+                  targetHour.value--;
+                  targetMinute.value = 59;
+              }
+              setTargetTime(targetHour.value, targetMinute.value)
+
+              if(targetHour.value < 0){
+                targetDesc.value = "Target achieved!"
+                endTarget();
+              } 
+          }  
+          
         }
-
-        seconds.value = 59;
-        minutes.value--;  
-        
-        //UPDATE TARGET TIME
-        if(targetDesc.value === "Target achieved!"){
-            endTarget();
-        }else if(targetDesc.value != "Set a target!"){
-            targetMinute.value--;
-            if(targetMinute.value < 0){
-                targetHour.value--;
-                targetMinute.value = 59;
-            }
-            setTargetTime(targetHour.value, targetMinute.value)
-
-            if(targetHour.value < 0){
-              targetDesc.value = "Target achieved!"
-              endTarget();
-            } 
-        }   
-        //END TARGET TIME
         
       } 
     }, 1000)
@@ -135,10 +142,9 @@ const toggleSetting = () => {
 }
 
 const setTargetTime = (hours:number,minutes:number) => {
-  console.log("received");
   targetHour.value = hours;
   targetMinute.value = minutes;
-  console.log(targetHour.value)
+
   targetDesc.value = targetHour.value + " hours and " + targetMinute.value + " minutes"
 }
 
@@ -156,10 +162,13 @@ const endTarget = () => {
         <img id="target-icon" src="./assets/icons/icon/target.svg" >
         <span id="target-desc">{{targetDesc}}</span>
       </button>
-      <Setting @closeSetting="toggleSetting" @saveChanges="setTargetTime" :class="settingDisplayed?'show':'hide'"/>
+
+      <Setting @closeSetting="toggleSetting" @saveChanges="setTargetTime" v-if="settingDisplayed"/>
     </div>
     
   </header>
+
+
   <main>
     <div class="wrapper">
       <div class="flex-box">
@@ -196,14 +205,12 @@ const endTarget = () => {
 
 }
 
-.show{
-    display:block;
+.flex-box{
+  display: flex;
+  flex-wrap:wrap;
+  justify-content: center;
+  align-items: center;
 }
-
-.hide{
-    display:none;
-}
-
 
 #target{
   background:none;
@@ -234,13 +241,6 @@ const endTarget = () => {
 #target-desc{
   font-weight:700;
   font-size: 1.2rem;
-}
-
-.flex-box{
-  display: flex;
-  flex-wrap:wrap;
-  justify-content: center;
-  align-items: center;
 }
 
 .control-bar{
