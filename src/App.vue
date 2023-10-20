@@ -177,9 +177,10 @@ const endTarget = () => {
         <OptionButton class="option" :active="longActive" @click="changeMode('long')" desc="long break" />
       </div>
 
-      <h1>
-        {{ oneDigit(minutes)?"0"+ minutes:minutes  }} : {{ oneDigit(seconds)?"0"+ seconds:seconds }}
+      <h1 class="time-display">
+        {{ oneDigit(minutes)?"0"+ minutes:minutes  }}:{{ oneDigit(seconds)?"0"+ seconds:seconds }}
       </h1>
+     
 
       <div class="flex-box control-bar">
         <ControlButton class="control-button" @click="countdown" :filename="playOrPause" />
@@ -191,18 +192,42 @@ const endTarget = () => {
 </template>
 
 <style scoped>
+ @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap');
 .wrapper{
+  font-family: 'Rubik', sans-serif;
   text-align: center;
   position:absolute;
   top:35%;
   width:100%;
 
   > h1{
-    font-size: 5rem;
+    font-size: 6.2rem;
     color:whitesmoke;
     margin:0.5rem;
   }
 
+}
+
+@media only screen and (min-width: 480px) {
+  .wrapper{
+  font-family: 'Rubik', sans-serif;
+  text-align: center;
+  position:absolute;
+  top:35%;
+  width:100%;
+
+  > h1{
+    font-size: 7rem;
+    color:whitesmoke;
+    margin:0.5rem;
+  }
+
+}
+
+}
+
+.time-display{
+  padding: 0.1rem 0;
 }
 
 .flex-box{
@@ -212,6 +237,7 @@ const endTarget = () => {
   align-items: center;
 }
 
+
 #target{
   background:none;
   display: flex;
@@ -220,7 +246,7 @@ const endTarget = () => {
   gap:0.5rem;
   align-items: center;
   padding:0.8rem;
-  border:3px solid black;
+  border:3px solid white;
   border-radius:2rem;
   margin-top: 10px;
   transition-duration: 150ms;
@@ -228,8 +254,9 @@ const endTarget = () => {
 }
 
 #target:hover{
-  border:3px solid white;
-  background-color: white;
+  border:3px solid rgb(220, 78, 2);
+  color:black;
+  background-color: rgb(220, 78, 2);
   transition-duration: 150ms;
   cursor:pointer
 }
@@ -239,8 +266,10 @@ const endTarget = () => {
 }
 
 #target-desc{
-  font-weight:700;
+  font-weight:500;
   font-size: 1.2rem;
+  padding:5px;
+  color:white
 }
 
 .control-bar{
@@ -249,7 +278,7 @@ const endTarget = () => {
   background-color:white;
   border: 1px solid white; 
   border-radius: 2rem;
-  width:15.6rem;
+  width:18rem;
 }
 
 .control-button{

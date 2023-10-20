@@ -17,15 +17,30 @@ const props = defineProps({
 
 <style scoped>
 .option-button{
-    padding:0.5rem 0.7rem;
+    padding:0.6rem 1rem;
     font-weight: 500;
+    font-size: 0.8rem;
     background:none;
     color:white;
     border: 2px solid white;
     margin-right: 5px;
-    border-radius: 1.375rem;
+    border-radius: 2rem;
     transition-duration: 200ms;
-  
+}
+
+@media only screen and (min-width: 480px) {
+  .option-button{
+    padding:0.6rem 1rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+    background:none;
+    color:white;
+    border: 3px solid white;
+    margin-right: 5px;
+    border-radius: 2rem;
+    transition-duration: 200ms;
+  }
+
 }
 
 .option-button:hover{
