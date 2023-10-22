@@ -3,8 +3,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
-import Setting from './components/setting.vue'
+import Setting from './components/targetSetting.vue'
 import { type TimerValues } from '@/types'
+import finishAudio from '@/assets/icons/audios/finish.mp3'
 
 const timer_values:TimerValues = reactive({
   PODOMORO_MINUTES : 25,
@@ -22,11 +23,10 @@ const longActive = ref(false);
 
 /*TARGET*/
 const targetDesc = ref("Set a target!")
-const targetHour = ref(0);
-const targetMinute = ref(0);
 
 /*SETTING*/
 const settingDisplayed = ref(false);
+const sectionDisplayed = ref('target');
 
 /*TIMER*/
 const minutes = ref(timer_values.PODOMORO_MINUTES);
@@ -37,26 +37,33 @@ const isActive = ref(false);
 /*INTERVAL*/
 const interval = ref(0)
 
+var audio = new Audio(finishAudio)
+
 /*LIFECYCLE HOOKS*/
 onMounted(() => {
+  
   //LOAD FROM LOCAL STORAGE
   let value = localStorage.getItem("timer_values") || "err";
-
-  console.log(JSON.parse(value))
-
   timer_values.PODOMORO_MINUTES = Number(JSON.parse(value).PODOMORO_MINUTES); // Update the Pomodoro minutes to 30
   timer_values.SHORT_BREAK_MINUTES = Number(JSON.parse(value).SHORT_BREAK_MINUTES); // Update the short break minutes to 7
   timer_values.LONG_BREAK_MINUTES = Number(JSON.parse(value).LONG_BREAK_MINUTES); // Update the long break minutes to 15
   timer_values.targetHour = Number(JSON.parse(value).targetHour); // Update the target hour to 12
   timer_values.targetMinute = Number(JSON.parse(value).targetMinute); // Update the target minute to 30
 
+  //SET STARTING DISPLAY
+  minutes.value = timer_values.PODOMORO_MINUTES || 25;
   if(timer_values.targetHour || timer_values.targetMinute){
     setTargetTime(timer_values.targetHour, timer_values.targetMinute)
   }
+
 })
 
 const addToLocalStorage =  (timeValues:TimerValues) => {
     localStorage.setItem('timer_values', JSON.stringify(timeValues));
+}
+
+const setSection = (section:string) => {
+  sectionDisplayed.value = section;
 }
 
 const setTargetTime = (hours:number,minutes:number) => {
@@ -64,11 +71,18 @@ const setTargetTime = (hours:number,minutes:number) => {
   timer_values.targetMinute = minutes;
   targetDesc.value = timer_values.targetHour + " hours and " + timer_values.targetMinute + " minutes"
   
-  addToLocalStorage(timer_values)
+  addToLocalStorage(timer_values);
 }
 
-const oneDigit = (num:Number) => {
-    return num.toString().length === 1
+const setPodomoroTime = (podomoro:number, short:number, long:number) => {
+  timer_values.PODOMORO_MINUTES = podomoro;
+  timer_values.SHORT_BREAK_MINUTES = short;
+  timer_values.LONG_BREAK_MINUTES = long;
+
+  minutes.value = podomoro;
+  seconds.value = 0;
+  
+  addToLocalStorage(timer_values);
 }
 
 const changeMode = (param:string) => {
@@ -106,7 +120,20 @@ function setActiveMode(mode:string){
   
 }
 
+
+/*HELPER FUNCTIONS*/
+const stopTimer = () => {
+  clearInterval(interval.value);
+  playOrPause.value = "play.svg";
+  isActive.value = false;
+}
+
+const oneDigit = (num:Number) => {
+    return num.toString().length === 1
+}
+
 function countdown(){ 
+  
   if(playOrPause.value === "play.svg"){
     //change play symbol to pause and set timer as active
     playOrPause.value = "pause.svg";
@@ -120,6 +147,9 @@ function countdown(){
         if(minutes.value == 0){ // check if timer should end
           seconds.value = 0;
           playOrPause.value = "play.svg";
+
+          //END TIMER
+          audio.play()
           return clearInterval(interval.value);
         }else{ // if not, move on to the next minute
           seconds.value = 59;
@@ -127,10 +157,8 @@ function countdown(){
 
           //Upgrade target time
           if(targetDesc.value === "Target reached!"){
-            console.log("X")
-            endTarget()
+              endTarget()
           }else if(targetDesc.value != "Set a target!"){
-            console.log("Y")
               timer_values.targetMinute--;
               if(timer_values.targetMinute < 0){
                   timer_values.targetHour--;
@@ -142,6 +170,8 @@ function countdown(){
                 targetDesc.value = "Target achieved!"
                 endTarget();
               } 
+
+
           }  
           
         }
@@ -150,32 +180,28 @@ function countdown(){
     }, 1000)
 
   }else{
-    playOrPause.value = "play.svg";
-    isActive.value = false;
-    clearInterval(interval.value)
+    stopTimer();
   }
 }
 
 function reset(){
-  playOrPause.value = "play.svg";
-  isActive.value = false;
-  clearInterval(interval.value);
+  stopTimer();
 
   if(mode.value === "podomoro"){
-    minutes.value = 25;
+    minutes.value = timer_values.PODOMORO_MINUTES;
     seconds.value = 0;
   }else if(mode.value === "short"){
-    minutes.value = 5;
+    minutes.value = timer_values.SHORT_BREAK_MINUTES;
     seconds.value = 0;
   } else if(mode.value === "long"){
-    minutes.value = 10;
+    minutes.value = timer_values.LONG_BREAK_MINUTES;
     seconds.value = 0;
   }
 }
 
-const toggleSetting = () => {
+const toggleTargetSetting = () => {
   settingDisplayed.value = !settingDisplayed.value;
-  console.log("Clicked!")
+  sectionDisplayed.value = 'target'
 }
 
 const endTarget = () => {
@@ -189,12 +215,21 @@ const endTarget = () => {
   
   <header>
     <div class="flex-box">
-      <button id="target" @click="toggleSetting">
+      <button id="target" @click="toggleTargetSetting">
         <img id="target-icon" src="./assets/icons/icon/target.svg" >
         <span id="target-desc">{{targetDesc}}</span>
       </button>
 
-      <Setting @closeSetting="toggleSetting" @saveChanges="setTargetTime" v-if="settingDisplayed"/>
+      <Setting 
+        @closeSetting="toggleTargetSetting" 
+        @saveTargetChanges="setTargetTime" 
+        @savePodomoroChanges="setPodomoroTime"
+        @changeSection="setSection"
+        v-if="settingDisplayed" 
+        :section="sectionDisplayed"
+        :timer="timer_values"
+      />
+
     </div>
     
   </header>
