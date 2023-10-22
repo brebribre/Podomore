@@ -14,7 +14,7 @@ const timer_values:TimerValues = reactive({
   targetMinute : 0
 })
 
-/*INTERFACE*/
+/*OPTIONS*/
 const mode = ref("podomoro");
 const podomoroActive = ref(true);
 const shortActive = ref(false);
@@ -42,6 +42,8 @@ onMounted(() => {
   //LOAD FROM LOCAL STORAGE
   let value = localStorage.getItem("timer_values") || "err";
 
+  console.log(JSON.parse(value))
+
   timer_values.PODOMORO_MINUTES = Number(JSON.parse(value).PODOMORO_MINUTES); // Update the Pomodoro minutes to 30
   timer_values.SHORT_BREAK_MINUTES = Number(JSON.parse(value).SHORT_BREAK_MINUTES); // Update the short break minutes to 7
   timer_values.LONG_BREAK_MINUTES = Number(JSON.parse(value).LONG_BREAK_MINUTES); // Update the long break minutes to 15
@@ -51,7 +53,6 @@ onMounted(() => {
   if(timer_values.targetHour || timer_values.targetMinute){
     setTargetTime(timer_values.targetHour, timer_values.targetMinute)
   }
-
 })
 
 const addToLocalStorage =  (timeValues:TimerValues) => {
@@ -126,8 +127,10 @@ function countdown(){
 
           //Upgrade target time
           if(targetDesc.value === "Target reached!"){
+            console.log("X")
             endTarget()
           }else if(targetDesc.value != "Set a target!"){
+            console.log("Y")
               timer_values.targetMinute--;
               if(timer_values.targetMinute < 0){
                   timer_values.targetHour--;
@@ -176,6 +179,7 @@ const toggleSetting = () => {
 }
 
 const endTarget = () => {
+  setTargetTime(0,0);
   targetDesc.value = "Target reached!"
 }
 
