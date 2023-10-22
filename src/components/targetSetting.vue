@@ -26,7 +26,7 @@ function clickHandler(){
 }
 
 function saveTargetTimeSetting(){
-    if(targetHours.value < 0 || targetMinutes.value < 0){
+    if(targetHours.value < 0 || targetMinutes.value < 0 || targetHours.value > 120 || targetMinutes.value > 120){
         toggleError(true);
     }else{
         toggleError(false);
@@ -36,7 +36,7 @@ function saveTargetTimeSetting(){
 }
 
 function saveStudyTimeSetting(){
-    if(podomoroMinute.value < 0 || shortMinute.value < 0 || longMinute.value < 0){
+    if(podomoroMinute.value < 0 || shortMinute.value < 0 || longMinute.value < 0 || podomoroMinute.value > 120 || shortMinute.value > 120 || longMinute.value > 120){
         toggleError(true);
     }else{
         toggleError(false);
@@ -92,7 +92,7 @@ function changeSection(section:string){
                 <input class = "time-input" type="number" placeholder="hours" :value="targetHours" @change="updateTargetHour"/>
                 <p class="small-text">minutes</p>
                 <input class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateTargetMinute"/>
-                <p class="small-text text-red" v-if="showError">Invalid number. Put a number above 0.</p>
+                <p class="small-text text-red" v-if="showError">Invalid number. Put a number between 0 and 120.</p>
                 <p>
                     <button class="submit" @click="saveTargetTimeSetting">
                         Save
