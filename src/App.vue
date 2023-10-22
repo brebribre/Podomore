@@ -231,7 +231,10 @@ const endTarget = () => {
       />
 
     </div>
-    
+    <div id="logo">
+      <h1>podomore</h1>
+    </div>
+
   </header>
 
 
@@ -259,7 +262,27 @@ const endTarget = () => {
 
 <style scoped>
  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap');
-.wrapper{
+
+
+
+#logo{
+  font-family: 'Rubik', sans-serif;
+  color: white;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  bottom:0;
+
+  > h1{
+    font-size: 1.5rem;
+    padding:0;
+  }
+}
+
+ .wrapper{
   font-family: 'Rubik', sans-serif;
   text-align: center;
   position:absolute;
@@ -275,7 +298,7 @@ const endTarget = () => {
 }
 
 @media only screen and (min-width: 480px) {
-  .wrapper{
+.wrapper{
   font-family: 'Rubik', sans-serif;
   text-align: center;
   position:absolute;
@@ -288,8 +311,26 @@ const endTarget = () => {
     margin:0.5rem;
   }
 
+} 
 }
 
+
+
+
+@media only screen and (min-width: 700px) {
+  #logo{
+    font-family: 'Rubik', sans-serif;
+    color: white;
+    position: absolute;
+    top:0;
+    left:2rem;
+    text-align: left;
+
+    > h1{
+      font-size: 2rem;
+      padding:0;
+    }
+  }
 }
 
 .time-display{
@@ -305,16 +346,17 @@ const endTarget = () => {
 
 
 #target{
+  z-index: 100;
   background:none;
   display: flex;
   flex-wrap: wrap;
   justify-content:flex-start;
   gap:0.5rem;
   align-items: center;
-  padding:0.8rem;
+  padding:0.5rem;
   border:3px solid white;
   border-radius:2rem;
-  margin-top: 10px;
+  margin-top: 20px;
   transition-duration: 150ms;
   cursor:pointer
 }
