@@ -1,36 +1,61 @@
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
 import Setting from './components/setting.vue'
+import { type TimerValues } from '@/types'
 
-/*DEFAULT SETTING*/
+const timer_values:TimerValues = reactive({
+  PODOMORO_MINUTES : 25,
+  SHORT_BREAK_MINUTES : 5,
+  LONG_BREAK_MINUTES : 10,
+  targetHour : 0,
+  targetMinute : 0
+})
+
+/*INTERFACE*/
 const mode = ref("podomoro");
 const podomoroActive = ref(true);
 const shortActive = ref(false);
 const longActive = ref(false);
 
-const PODOMORO_MINUTES = 25;
-const SHORT_BREAK_MINUTES = 5;
-const LONG_BREAK_MINUTES = 10;
-
-/*TARGET SETTING*/
+/*TARGET*/
 const targetDesc = ref("Set a target!")
 const targetHour = ref(0);
 const targetMinute = ref(0);
 
+/*SETTING*/
 const settingDisplayed = ref(false);
 
-/*DEFAULT SETTING*/
-const minutes = ref(PODOMORO_MINUTES);
+/*TIMER*/
+const minutes = ref(timer_values.PODOMORO_MINUTES);
 const seconds = ref(0);
 const playOrPause = ref("play.svg");
 const isActive = ref(false);
 
-/*INTERVAL SETTING*/
+/*INTERVAL*/
 const interval = ref(0)
 
+/*LIFECYCLE HOOKS*/
+onMounted(() => {
+  //LOAD FROM LOCAL STORAGE
+  let value = localStorage.getItem("settings") || "err";
+
+  console.log(value)
+})
+
+const addToLocalStorage =  (timeValues:TimerValues) => {
+    localStorage.setItem('timer_values', JSON.stringify(timeValues));
+}
+
+const setTargetTime = (hours:number,minutes:number) => {
+  targetHour.value = hours;
+  targetMinute.value = minutes;
+  targetDesc.value = targetHour.value + " hours and " + targetMinute.value + " minutes"
+  
+  addToLocalStorage(timer_values)
+}
 
 const oneDigit = (num:Number) => {
     return num.toString().length === 1
@@ -141,12 +166,7 @@ const toggleSetting = () => {
   console.log("Clicked!")
 }
 
-const setTargetTime = (hours:number,minutes:number) => {
-  targetHour.value = hours;
-  targetMinute.value = minutes;
 
-  targetDesc.value = targetHour.value + " hours and " + targetMinute.value + " minutes"
-}
 
 const endTarget = () => {
   targetDesc.value = "Target reached!"
