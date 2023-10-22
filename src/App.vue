@@ -40,9 +40,18 @@ const interval = ref(0)
 /*LIFECYCLE HOOKS*/
 onMounted(() => {
   //LOAD FROM LOCAL STORAGE
-  let value = localStorage.getItem("settings") || "err";
+  let value = localStorage.getItem("timer_values") || "err";
 
-  console.log(value)
+  timer_values.PODOMORO_MINUTES = Number(JSON.parse(value).PODOMORO_MINUTES); // Update the Pomodoro minutes to 30
+  timer_values.SHORT_BREAK_MINUTES = Number(JSON.parse(value).SHORT_BREAK_MINUTES); // Update the short break minutes to 7
+  timer_values.LONG_BREAK_MINUTES = Number(JSON.parse(value).LONG_BREAK_MINUTES); // Update the long break minutes to 15
+  timer_values.targetHour = Number(JSON.parse(value).targetHour); // Update the target hour to 12
+  timer_values.targetMinute = Number(JSON.parse(value).targetMinute); // Update the target minute to 30
+
+  if(timer_values.targetHour || timer_values.targetMinute){
+    setTargetTime(timer_values.targetHour, timer_values.targetMinute)
+  }
+
 })
 
 const addToLocalStorage =  (timeValues:TimerValues) => {
@@ -50,9 +59,9 @@ const addToLocalStorage =  (timeValues:TimerValues) => {
 }
 
 const setTargetTime = (hours:number,minutes:number) => {
-  targetHour.value = hours;
-  targetMinute.value = minutes;
-  targetDesc.value = targetHour.value + " hours and " + targetMinute.value + " minutes"
+  timer_values.targetHour = hours;
+  timer_values.targetMinute = minutes;
+  targetDesc.value = timer_values.targetHour + " hours and " + timer_values.targetMinute + " minutes"
   
   addToLocalStorage(timer_values)
 }
@@ -65,15 +74,15 @@ const changeMode = (param:string) => {
   mode.value = param;
 
   if(mode.value === "podomoro"){
-    minutes.value = PODOMORO_MINUTES;
+    minutes.value = timer_values.PODOMORO_MINUTES;
     seconds.value = 0;
     setActiveMode("podomoro");
   }else if(mode.value === "short"){
-    minutes.value = SHORT_BREAK_MINUTES;
+    minutes.value = timer_values.SHORT_BREAK_MINUTES;
     seconds.value = 0;
     setActiveMode("short");
   } else if(mode.value === "long"){
-    minutes.value = LONG_BREAK_MINUTES;
+    minutes.value = timer_values.LONG_BREAK_MINUTES;
     seconds.value = 0;
     setActiveMode("long");
   }
@@ -119,14 +128,14 @@ function countdown(){
           if(targetDesc.value === "Target reached!"){
             endTarget()
           }else if(targetDesc.value != "Set a target!"){
-              targetMinute.value--;
-              if(targetMinute.value < 0){
-                  targetHour.value--;
-                  targetMinute.value = 59;
+              timer_values.targetMinute--;
+              if(timer_values.targetMinute < 0){
+                  timer_values.targetHour--;
+                  timer_values.targetMinute = 59;
               }
-              setTargetTime(targetHour.value, targetMinute.value)
+              setTargetTime(timer_values.targetHour, timer_values.targetMinute)
 
-              if(targetHour.value < 0){
+              if(timer_values.targetHour < 0){
                 targetDesc.value = "Target achieved!"
                 endTarget();
               } 
@@ -165,8 +174,6 @@ const toggleSetting = () => {
   settingDisplayed.value = !settingDisplayed.value;
   console.log("Clicked!")
 }
-
-
 
 const endTarget = () => {
   targetDesc.value = "Target reached!"
