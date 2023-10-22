@@ -78,7 +78,7 @@ function changeSection(section:string){
 </script>
 
 <template>
-  <main>r
+  <main>
     <div class="popup" >
         <div class="section">
             <span @click="changeSection('target')" :class="displayedSection==='target'?'selected':''">target</span> <span>|</span>
