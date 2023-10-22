@@ -30,7 +30,9 @@ function saveTargetTimeSetting(){
         toggleError(true);
     }else{
         toggleError(false);
-        emit("saveTargetChanges", targetHours.value, targetMinutes.value);
+        const t_hour = Number(targetHours.value);
+        const t_minute = Number(targetMinutes.value)
+        emit("saveTargetChanges", t_hour, t_minute);
         clickHandler();
     } 
 }
@@ -40,9 +42,17 @@ function saveStudyTimeSetting(){
         toggleError(true);
     }else{
         toggleError(false);
-        emit("savePodomoroChanges", podomoroMinute.value, shortMinute.value, longMinute.value);
+        const pod = Number(podomoroMinute.value);
+        const short = Number(shortMinute.value)
+        const long = Number(longMinute.value)
+
+        emit("savePodomoroChanges", pod, short, long);
         clickHandler();
     } 
+}
+
+const trimAllData = () => {
+
 }
 
 const toggleError = (isDisplayed:boolean) => {
@@ -89,9 +99,9 @@ function changeSection(section:string){
             <p class="desc">How long do you want to study today?</p>
             <div class="time-container">
                 <p class="small-text">hours</p>
-                <input class = "time-input" type="number" placeholder="hours" :value="targetHours" @change="updateTargetHour"/>
+                <input maxLength ={2} class = "time-input" type="number" placeholder="hours" :value="targetHours" @change="updateTargetHour"/>
                 <p class="small-text">minutes</p>
-                <input class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateTargetMinute"/>
+                <input maxLength ={2} class = "time-input" type="number" placeholder="minutes" :value="targetMinutes" @change="updateTargetMinute"/>
                 <p class="small-text text-red" v-if="showError">Invalid number. Put a number between 0 and 120.</p>
                 <p>
                     <button class="submit" @click="saveTargetTimeSetting">
