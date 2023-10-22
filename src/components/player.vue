@@ -5,8 +5,7 @@
 
 <template>
   <div id="player">
-    <iframe src="https://open.spotify.com/embed/episode/178bdF0u3iZnkYhBx1JUBS?utm_source=generator" width="350px" height="100" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-   
+    <iframe src="https://open.spotify.com/embed/episode/6iHWpjcdJrO3wG5VKwyzpn?utm_source=generator" width="350px" height="100" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
 </template>
 
@@ -20,7 +19,6 @@
     margin-right: auto;
     text-align: center;
     z-index: 100;
-
 }
 
 
