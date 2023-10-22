@@ -277,15 +277,7 @@ const endTarget = () => {
 
 
 #logo{
-  font-family: 'Rubik', sans-serif;
-  color: white;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  text-align: center;
-  bottom:0;
+  display: none;
 
   > h1{
     font-size: 1.5rem;
