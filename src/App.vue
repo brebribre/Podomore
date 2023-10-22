@@ -1,11 +1,15 @@
 <script setup lang="ts">
 
+import Vue from 'vue'
 import { onMounted, reactive, ref } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
 import Setting from './components/targetSetting.vue'
 import { type TimerValues } from '@/types'
-import finishAudio from '@/assets/icons/audios/finish.mp3'
+import Player from '@/components/player.vue'
+import finishAudio from '@/assets/audios/finish.mp3'
+import video from '@/assets/videos/background-1.mp4';
+
 
 const timer_values:TimerValues = reactive({
   PODOMORO_MINUTES : 25,
@@ -41,7 +45,7 @@ var audio = new Audio(finishAudio)
 
 /*LIFECYCLE HOOKS*/
 onMounted(() => {
-  
+
   //LOAD FROM LOCAL STORAGE
   let value = localStorage.getItem("timer_values") || "err";
   timer_values.PODOMORO_MINUTES = Number(JSON.parse(value).PODOMORO_MINUTES); // Update the Pomodoro minutes to 30
@@ -212,8 +216,18 @@ const endTarget = () => {
 </script>
 
 <template>
-  
-  <header>
+  <div class="background-video">
+    <video autoplay loop muted>
+      <source :src="video" type="video/mp4" />
+    </video>
+  </div>
+
+  <div>
+    <Player />
+  </div>
+
+
+  <main>
     <div class="flex-box">
       <button id="target" @click="toggleTargetSetting">
         <img id="target-icon" src="./assets/icons/icon/target.svg" >
@@ -234,12 +248,9 @@ const endTarget = () => {
     <div id="logo">
       <h1>podomore</h1>
     </div>
-
-  </header>
-
-
-  <main>
+    
     <div class="wrapper">
+      
       <div class="flex-box">
         <OptionButton class="option" :active="podomoroActive" @click="changeMode('podomoro')" desc="podomoro" />
         <OptionButton class="option" :active="shortActive" @click="changeMode('short')" desc="short break" />
@@ -333,6 +344,21 @@ const endTarget = () => {
   }
 }
 
+.background-video{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+video {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
 .time-display{
   padding: 0.1rem 0;
 }
@@ -362,9 +388,9 @@ const endTarget = () => {
 }
 
 #target:hover{
-  border:3px solid rgb(220, 78, 2);
+  border:3px solid black;
   color:black;
-  background-color: rgb(220, 78, 2);
+  background-color: black;
   transition-duration: 150ms;
   cursor:pointer
 }
