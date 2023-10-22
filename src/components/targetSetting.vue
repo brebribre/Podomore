@@ -130,20 +130,7 @@ function changeSection(section:string){
 </template>
 
 <style scoped>
-.popup{
-    background-color:rgb(32, 31, 31);
-    border-radius : 1.2rem;
-    position: absolute; 
-    top: 25%;
-    left: 0; 
-    right: 0; 
-    z-index:5;
-    margin-left: auto; 
-    margin-right: auto; 
-    width: 25rem; /* Need a specific value to work */
-    height: 25rem;
-    text-align:center;
-}
+
 
 #time{
     padding-top: 1rem;
@@ -221,5 +208,37 @@ function changeSection(section:string){
     cursor:pointer
 }
 
+
+@media only screen and (min-width: 480px) {
+    .popup{
+        background-color:rgb(32, 31, 31);
+        border-radius : 1.2rem;
+        position: absolute; 
+        top: 25%;
+        left: 0; 
+        right: 0; 
+        z-index:5;
+        margin-left: auto; 
+        margin-right: auto; 
+        width: 25rem; /* Need a specific value to work */
+        height: 25rem;
+        text-align:center;
+    }
+}
+
+.popup{
+    background-color:rgb(32, 31, 31);
+    border-radius : 1.2rem;
+    position: absolute; 
+    top: 25%;
+    left: 0; 
+    right: 0; 
+    z-index:5;
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 21rem; /* Need a specific value to work */
+    height: 24rem;
+    text-align:center;
+}
 
 </style>

@@ -12,7 +12,7 @@
 <style scoped>
 #player{
     position: absolute;
-    bottom:1rem;
+    bottom:0rem;
     left:0;
     right:0;
     margin-left: auto;
