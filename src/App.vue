@@ -4,11 +4,12 @@ import Vue from 'vue'
 import { onMounted, reactive, ref } from 'vue'
 import OptionButton from './components/option.vue'
 import ControlButton from './components/control.vue'
-import Setting from './components/targetSetting.vue'
+import Setting from './components/setting.vue'
 import { type TimerValues } from '@/types'
 import Player from '@/components/player.vue'
 import finishAudio from '@/assets/audios/finish.mp3'
 import video from '@/assets/videos/background-1.mp4';
+import Todo from '@/components/todo.vue'
 
 
 const timer_values:TimerValues = reactive({
@@ -31,6 +32,13 @@ const targetDesc = ref("Set a target!")
 /*SETTING*/
 const settingDisplayed = ref(false);
 const sectionDisplayed = ref('target');
+
+/*TODO*/
+const todosDisplayed = ref(false);
+const toggleTodos = () => {
+  todosDisplayed.value = !todosDisplayed.value;
+  console.log(todosDisplayed.value)
+}
 
 /*TIMER*/
 const minutes = ref(timer_values.PODOMORO_MINUTES);
@@ -228,6 +236,8 @@ const endTarget = () => {
 
 
   <main>
+    <Todo v-if="todosDisplayed" @minimizeTodos="toggleTodos" />
+    <button class="todo-toggle" @click="toggleTodos">Todo</button>
     <div class="flex-box">
       <button id="target" @click="toggleTargetSetting">
         <img id="target-icon" src="./assets/icons/icon/target.svg" >
@@ -317,10 +327,15 @@ const endTarget = () => {
 } 
 }
 
-
-
+@media (max-width: 1100px) {
+  .todo-toggle {
+    display: none;
+  }
+}
 
 @media only screen and (min-width: 700px) {
+
+  
   #logo{
     font-family: 'Rubik', sans-serif;
     color: white;
@@ -410,6 +425,32 @@ video {
 .control-button{
   margin-right: 2rem;
   margin-left: 2rem;
+}
+
+.todo-toggle{
+
+  position: absolute;
+  left: 1.5rem;
+  top:1.5rem;
+  background:white;
+  border:4px solid white;
+  padding:5px 15px;
+  border-radius: 2rem;
+  font-size: 1.7rem;
+  font-weight: bold;
+  color:black;
+  transition-duration: 200ms;
+}
+
+.todo-toggle:hover{
+  background-color: black;
+  border:4px solid black;
+  color:white;
+  transition-duration: 200ms;
+}
+
+.hide{
+  display:hide;
 }
 
 </style>

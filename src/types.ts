@@ -6,3 +6,12 @@ export interface TimerValues {
     targetHour: number;
     targetMinute: number;
 }
+
+export interface TodoElement {
+    desc: string;
+    completed: boolean;
+}
+
+export interface Todo {
+    list: TodoElement[];
+}
