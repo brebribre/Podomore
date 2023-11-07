@@ -51,9 +51,6 @@ function saveStudyTimeSetting(){
     } 
 }
 
-const trimAllData = () => {
-
-}
 
 const toggleError = (isDisplayed:boolean) => {
     showError.value = isDisplayed;
@@ -140,8 +137,6 @@ function changeSection(section:string){
 </template>
 
 <style scoped>
-
-
 #time{
     padding-top: 1rem;
 }
@@ -150,11 +145,9 @@ function changeSection(section:string){
     font-weight: 400;
     color:gray;
 }
-
 .text-red{
     color:rgb(233, 59, 59);
 }
-
 .section{
     padding-top: 2rem;
     > span{
@@ -163,13 +156,10 @@ function changeSection(section:string){
         color:gray;
     }
 }
-
 .selected{
     text-decoration: underline;
     font-weight: 800;
 }
-
-
 .desc{
     color:white;
     font-size: 01rem;
@@ -177,12 +167,10 @@ function changeSection(section:string){
     text-align:center;
     margin-top: 2rem;
 }
-
 .time-container{
     color:white;
     font-weight: 800;
 }
-
 .time-input{
     border: none;
     border-radius:0.2rem;
@@ -191,7 +179,6 @@ function changeSection(section:string){
     width:5rem;
     
 }
-
 /*SUBMIT*/
 .submit{
     width:6rem;
@@ -217,7 +204,20 @@ function changeSection(section:string){
     right:20px;
     cursor:pointer
 }
-
+.popup{
+    background-color:rgb(32, 31, 31);
+    border-radius : 1.2rem;
+    position: absolute; 
+    top: 25%;
+    left: 0; 
+    right: 0; 
+    z-index:5;
+    margin-left: auto; 
+    margin-right: auto; 
+    width: 21rem; /* Need a specific value to work */
+    height: 24rem;
+    text-align:center;
+}
 
 @media only screen and (min-width: 480px) {
     .popup{
@@ -234,21 +234,6 @@ function changeSection(section:string){
         height: 25rem;
         text-align:center;
     }
-}
-
-.popup{
-    background-color:rgb(32, 31, 31);
-    border-radius : 1.2rem;
-    position: absolute; 
-    top: 25%;
-    left: 0; 
-    right: 0; 
-    z-index:5;
-    margin-left: auto; 
-    margin-right: auto; 
-    width: 21rem; /* Need a specific value to work */
-    height: 24rem;
-    text-align:center;
 }
 
 </style>

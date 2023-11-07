@@ -284,8 +284,6 @@ const endTarget = () => {
 <style scoped>
  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap');
 
-
-
 #logo{
   display: none;
 
@@ -334,8 +332,6 @@ const endTarget = () => {
 }
 
 @media only screen and (min-width: 700px) {
-
-  
   #logo{
     font-family: 'Rubik', sans-serif;
     color: white;
